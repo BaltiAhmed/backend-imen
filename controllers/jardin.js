@@ -49,7 +49,8 @@ const signup = async (req, res, next) => {
         date_creation: 'gghghg',
         tel,
         actif: true,
-        confirmation:false
+        confirmation:true,
+        enfants:[]
 
     });
 

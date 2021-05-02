@@ -26,7 +26,7 @@ app.use("/api/admin", adminRoutes);
 
 app.use("/api/jardin", jardinRoutes);
 app.use("/api/parent", parentsRoutes);
-/* app.use('/api/enfant',enfantRoutes) */
+app.use('/api/enfant',enfantRoutes)
 
 app.use((req, res, next) => {
   const error = new httperror("could not find that page", 404);

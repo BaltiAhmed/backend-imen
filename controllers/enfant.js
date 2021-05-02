@@ -1,93 +1,103 @@
-const httpError = require('../models/error');
+const httpError = require("../models/error");
 
-const parent = require('../models/parent');
-const enfant = require('../models/enfant');
-const { validationResult } = require('express-validator');
-
+const parent = require("../models/parent");
+const enfant = require("../models/enfant");
+const { validationResult } = require("express-validator");
+const jardin = require("../models/jardin");
 
 const ajoutEnfant = async (req, res, next) => {
-    const error = validationResult(req);
-    if (!error.isEmpty()) {
-        return next
-            (new httpError('invalid input passed ', 422));
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return next(new httpError("invalid input passed ", 422));
+  }
 
-    }
+  const { nom, prenom, Dnaissance, parentId } = req.body;
 
-    const { nom, prenom, Dnaissance, parentId } = req.body;
-    
-    const createdEnfant= new enfant({
+  const createdEnfant = new enfant({
+    nom,
+    prenom,
+    Dnaissance,
+  });
 
-        nom,
-        prenom,
-        Dnaissance
-    });
+  let existingParent;
 
-    let existingParent
+  try {
+    existingParent = await parent.findById(parentId);
+  } catch (err) {
+    const error = new httpError("problem !!!!!", 500);
+    return next(error);
+  }
 
-    try{
-        existingParent = await parent.findById(parentId)
-    }catch (err) {
-        const error = new httpError('problem !!!!!', 500);
-        return next(error);
-    }
+  try {
+    await createdEnfant.save();
+    existingParent.enfants.push(createdEnfant);
+    await existingParent.save();
+  } catch (err) {
+    const error = new httpError("failed signup", 500);
+    return next(error);
+  }
 
-   
+  res.status(201).json({ Enfant: createdEnfant });
+};
 
-    try {
-        await createdEnfant.save();
-        existingParent.enfants.push(createdEnfant)
-        await existingParent.save()
+const updateEnfant = async (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return next(new httpError("invalid input passed ", 422));
+  }
 
-       
-    } catch (err) {
-        const error = new httpError('failed signup', 500);
-        return next(error);
-    }
+  const { nom, prenom, Dnaissance } = req.body;
+  const UserId = req.params.UserId;
+  let existingEnfant;
+
+  try {
+    existingEnfant = await enfant.findById(id);
+  } catch {
+    return next(new httpError("failed ", 500));
+  }
+  existingEnfant.nom = nom;
+  existingEnfant.prenom = prenom;
+  existingEnfant.Dnaissance = Dnaissance;
+
+  try {
+    existingEnfant.save();
+  } catch {
+    return next(new httpError("failed to save ", 500));
+  }
+
+  res.status(200).json({ existingEnfant: existingEnfant });
+};
+
+const getEnfantsByJardinId = async (req, res, next) => {
+  const jardinId = req.params.id;
+
+  let existingEnfant;
+  try {
+    existingEnfant = await jardin.findById(jardinId).populate("enfants");
+  } catch (err) {
+    const error = new httpError(
+      "Fetching enfats failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
 
   
-    res.status(201).json({ Enfant: createdEnfant });
+  if (!existingEnfant || existingEnfant.enfants.length === 0) {
+    return next(
+      new httpError("Could not find child for the provided user id.", 404)
+    );
+  }
 
+  res.json({
+    enfants: existingEnfant.enfants.map((enfant) =>
+      enfant.toObject({ getters: true })
+    ),
+  });
+};
 
-}
+exports.ajoutEnfant = ajoutEnfant;
 
-const updateEnfant= async (req, res, next) => {
-    const error = validationResult(req);
-    if (!error.isEmpty()) {
-        return next
-            (new httpError('invalid input passed ', 422));
-    }
+exports.updateEnfant = updateEnfant;
 
-    const { nom, prenom, Dnaissance} = req.body;
-    const UserId = req.params.UserId
-    let existingEnfant;
-
-    try {
-        existingEnfant = await enfant.findById(id)
-    } catch {
-
-        return next
-            (new httpError('failed ', 500));
-    }
-    existingEnfant.nom = nom;
-    existingEnfant.prenom = prenom;
-    existingEnfant.Dnaissance = Dnaissance;
-  
-
-
-    try {
-        existingEnfant.save()
-    } catch {
-        return next
-            (new httpError('failed to save ', 500));
-    }
-
-    res.status(200).json({ existingEnfant: existingEnfant })
-}
-
-
-
-
-
-exports.ajoutEnfant=ajoutEnfant
-
-exports.updateEnfant = updateEnfant
+exports.getEnfantsByJardinId=getEnfantsByJardinId

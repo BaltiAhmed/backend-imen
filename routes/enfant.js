@@ -29,6 +29,8 @@ check('Dnaissance')
 .isEmpty()
 , enfantControllers.updateEnfant)
 
+route.get('/jardin/:id',enfantControllers.getEnfantsByJardinId)
+
 
 
 
