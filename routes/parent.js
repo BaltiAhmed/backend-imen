@@ -5,6 +5,8 @@ const parentControllers = require('../controllers/parent')
 
 const {check} = require('express-validator')
 
+route.post('/inscription',parentControllers.InscriptionParentJardin)
+
 route.post('/signup', 
 check('nom')
 .not()
@@ -56,5 +58,9 @@ route.get('/',parentControllers.getParent)
 route.get('/:id',parentControllers.getParent)
 
 route.patch('/bloquer/:id',parentControllers.bloquerParent)
+
+route.get('/jardin/:id',parentControllers.getParentByJardinId)
+
+
 
 module.exports = route

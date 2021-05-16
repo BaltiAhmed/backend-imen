@@ -4,7 +4,8 @@ const schema = mongoose.Schema;
 const enfantSchema = new schema({
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
-    Dnaissance: { type: String, required: true }
+    Dnaissance: { type: String, required: true },
+    photo:{type:String,required:true},
 
 })
 
