@@ -55,7 +55,7 @@ route.delete('/:id',parentControllers.deleteParent)
 
 route.get('/',parentControllers.getParent)
 
-route.get('/:id',parentControllers.getParent)
+route.get('/:id',parentControllers.getParentById)
 
 route.patch('/bloquer/:id',parentControllers.bloquerParent)
 

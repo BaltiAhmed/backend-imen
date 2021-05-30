@@ -1,39 +1,46 @@
-const express = require('express');
+const express = require("express");
 const route = express.Router();
 
-const enfantControllers = require('../controllers/enfant')
+const enfantControllers = require("../controllers/enfant");
+const fileUpload = require("../middleware/file-upload");
 
-const {check} = require('express-validator')
+const { check } = require("express-validator");
 
-route.post('/ajout', 
-check('nom')
-.not()
-.isEmpty(),
-check('prenom')
-.not()
-.isEmpty(),
-check('Dnaissance')
-.not()
-.isEmpty()
-, enfantControllers.ajoutEnfant)
+route.post(
+  "/ajoutParJardin",
+  fileUpload.single("image"),
+  [
+    check("nom").not().isEmpty(),
+    check("prenom").not().isEmpty(),
+    check("Dnaissance").not().isEmpty(),
+  ],
+  enfantControllers.ajoutEnfantParJardin
+);
 
-route.post('/:id', 
-check('nom')
-.not()
-.isEmpty(),
-check('prenom')
-.not()
-.isEmpty(),
-check('Dnaissance')
-.not()
-.isEmpty()
-, enfantControllers.updateEnfant)
+route.post(
+  "/ajout",
+  fileUpload.single("image"),
+  [
+    check("nom").not().isEmpty(),
+    check("prenom").not().isEmpty(),
+    check("Dnaissance").not().isEmpty(),
+  ],
+  enfantControllers.ajoutEnfant
+);
 
-route.get('/jardin/:id',enfantControllers.getEnfantsByJardinId)
+route.patch(
+  "/:id",
+  fileUpload.single("image"),
+  [check("nom").not().isEmpty(),
+  check("prenom").not().isEmpty(),
+  check("Dnaissance").not().isEmpty()],
+  enfantControllers.updateEnfant
+);
 
+route.get("/jardin/:id", enfantControllers.getEnfantsByJardinId);
 
-
+route.delete('/:id',enfantControllers.deleteEnfant)
 
 /* route.get('/:id',enfantControllers.getEnfant) */
 
-module.exports = route
+module.exports = route;

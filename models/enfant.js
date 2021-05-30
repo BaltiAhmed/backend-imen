@@ -6,6 +6,7 @@ const enfantSchema = new schema({
     prenom: { type: String, required: true },
     Dnaissance: { type: String, required: true },
     photo:{type:String,required:true},
+    parentId:{type:String,required:true}
 
 })
 
