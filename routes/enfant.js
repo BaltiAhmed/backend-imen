@@ -38,6 +38,7 @@ route.patch(
 );
 
 route.get("/jardin/:id", enfantControllers.getEnfantsByJardinId);
+route.get("/parent/:id", enfantControllers.getEnfantsByParentId);
 
 route.delete('/:id',enfantControllers.deleteEnfant)
 

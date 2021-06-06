@@ -18,7 +18,7 @@ const ajoutEnfant = async (req, res, next) => {
     prenom,
     Dnaissance,
     photo: req.file.path,
-    parentId
+    parentId,
   });
 
   let existingParent;
@@ -98,6 +98,33 @@ const getEnfantsByJardinId = async (req, res, next) => {
   });
 };
 
+const getEnfantsByParentId = async (req, res, next) => {
+  const id = req.params.id;
+
+  let existingEnfant;
+  try {
+    existingEnfant = await parent.findById(id).populate("enfants");
+  } catch (err) {
+    const error = new httpError(
+      "Fetching enfats failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingEnfant || existingEnfant.enfants.length === 0) {
+    return next(
+      new httpError("Could not find child for the provided user id.", 404)
+    );
+  }
+
+  res.json({
+    enfants: existingEnfant.enfants.map((enfant) =>
+      enfant.toObject({ getters: true })
+    ),
+  });
+};
+
 const ajoutEnfantParJardin = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
@@ -105,14 +132,14 @@ const ajoutEnfantParJardin = async (req, res, next) => {
   }
 
   const { nom, prenom, Dnaissance, parentId, jardinId } = req.body;
-  
 
   const createdEnfant = new enfant({
     nom,
     prenom,
     Dnaissance,
     photo: req.file.path,
-    parentId
+    parentId,
+    jardinId
   });
 
   let existingParent;
@@ -175,4 +202,6 @@ exports.getEnfantsByJardinId = getEnfantsByJardinId;
 
 exports.ajoutEnfantParJardin = ajoutEnfantParJardin;
 
-exports.deleteEnfant = deleteEnfant
+exports.deleteEnfant = deleteEnfant;
+
+exports.getEnfantsByParentId = getEnfantsByParentId
