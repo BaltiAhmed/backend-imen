@@ -39,7 +39,11 @@ const signup = async (req, res, next) => {
     actif: true,
     confirmation: true,
     enfants: [],
+    parents: [],
+    activitys: [],
+    evenements: [],
   });
+
 
   try {
     await createdJardin.save();
