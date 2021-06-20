@@ -12,7 +12,7 @@ const signup = async (req, res, next) => {
     return next(new httpError("invalid input passed ", 422));
   }
 
-  const { nom, email, password, description, adresse, tel } = req.body;
+  const { nom, email,date, password, description, adresse, tel } = req.body;
   let existingjardin;
   try {
     existingjardin = await jardin.findOne({ email: email });
@@ -32,9 +32,9 @@ const signup = async (req, res, next) => {
     password,
     description,
     adresse,
-    logo: "gfghh",
+    logo: req.file.path,
     nbr_employeur: 0,
-    date_creation: "gghghg",
+    date_creation: date,
     tel,
     actif: true,
     confirmation: true,
@@ -112,8 +112,8 @@ const updateJardin = async (req, res, next) => {
     return next(new httpError("invalid input passed ", 422));
   }
 
-  const { nom, email, password, description, nbr_employeur, tel } = req.body;
-  const UserId = req.params.UserId;
+  const { nom, email,date, password, description, adresse, tel } = req.body;
+  const UserId = req.params.id;
   let existingJardin;
 
   try {
@@ -125,8 +125,10 @@ const updateJardin = async (req, res, next) => {
   existingJardin.email = email;
   existingJardin.password = password;
   existingJardin.description = description;
-  existingJardin.nbr_employeur = nbr_employeur;
+  existingJardin.date_creation = date;
+  existingJardin.adresse = adresse;
   existingJardin.tel = tel;
+  existingJardin.logo = req.file.path;
 
   try {
     existingJardin.save();

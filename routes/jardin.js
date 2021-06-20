@@ -5,13 +5,18 @@ const jardinControllers = require("../controllers/jardin");
 
 const { check } = require("express-validator");
 
+const fileUpload = require("../middleware/file-upload");
+
 route.post(
   "/signup",
-  check("nom").not().isEmpty(),
-  check("email").normalizeEmail(),
-  check("password").isLength({ min: 8 }),
-  check("description").not().isEmpty(),
-  check("tel").isLength({ min: 8 }),
+  fileUpload.single("image"),
+  [
+    check("nom").not().isEmpty(),
+    check("email").normalizeEmail(),
+    check("password").isLength({ min: 8 }),
+    check("description").not().isEmpty(),
+    check("tel").isLength({ min: 8 }),
+  ],
   jardinControllers.signup
 );
 
@@ -23,13 +28,15 @@ route.post(
 );
 
 route.patch(
-  "/:UserId",
-  check("nom").not().isEmpty(),
-  check("email").normalizeEmail(),
-  check("password").isLength({ min: 8 }),
-  check("description").not().isEmpty(),
-  check("nbr_employeur").not().isEmpty(),
-  check("tel").isLength({ min: 8 }),
+  "/:id",
+  fileUpload.single("image"),
+  [
+    check("nom").not().isEmpty(),
+    check("email").normalizeEmail(),
+    check("password").isLength({ min: 8 }),
+    check("description").not().isEmpty(),
+    check("tel").isLength({ min: 8 }),
+  ],
   jardinControllers.updateJardin
 );
 
