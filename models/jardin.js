@@ -18,7 +18,8 @@ const jardinSchema = new schema({
     enfants:[{type:mongoose.Types.ObjectId,required:true,ref:'enfant'}],
     parents:[{type:mongoose.Types.ObjectId,required:true,ref:'parent'}],
     activitys:[{type:mongoose.Types.ObjectId,required:true,ref:'activity'}],
-    evenements:[{type:mongoose.Types.ObjectId,required:true,ref:'evenement'}]
+    evenements:[{type:mongoose.Types.ObjectId,required:true,ref:'evenement'}],
+    messages:[{type:mongoose.Types.ObjectId,required:true,ref:'message'}]
 
 })
 

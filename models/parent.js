@@ -10,7 +10,8 @@ const parentsSchema = new schema({
     adresse:{type:String,required:true},
     tel:{type:String,required:true,minlength:8},
     actif:{type:String,required:true},
-    enfants:[{type:mongoose.Types.ObjectId,required:true,ref:'enfant'}]
+    enfants:[{type:mongoose.Types.ObjectId,required:true,ref:'enfant'}],
+    messages:[{type:mongoose.Types.ObjectId,required:true,ref:'message'}]
 
 })
 

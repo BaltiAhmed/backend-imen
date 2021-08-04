@@ -10,6 +10,7 @@ const parentsRoutes = require("./routes/parent");
 const enfantRoutes = require("./routes/enfant");
 const activityRoutes = require("./routes/activity");
 const evenementRoutes = require("./routes/evenement");
+const messageRoutes = require("./routes/message");
 
 const httperror = require("./models/error");
 
@@ -36,6 +37,7 @@ app.use("/api/parent", parentsRoutes);
 app.use("/api/enfant", enfantRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/evenement", evenementRoutes);
+app.use("/api/message", messageRoutes);
 
 app.use((req, res, next) => {
   const error = new httperror("could not find that page", 404);
