@@ -104,7 +104,7 @@ const updateParent = async (req, res, next) => {
   let existingParent;
 
   try {
-    existingParent = await parent.findById(UserId);
+    existingParent = await parent.findById(id);
   } catch {
     return next(new httpError("failed ", 500));
   }
