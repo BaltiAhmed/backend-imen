@@ -6,6 +6,17 @@ const { validationResult } = require("express-validator");
 
 const jwt = require("jsonwebtoken");
 
+const nodemailer = require("nodemailer");
+
+const log = console.log;
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL || "twaibia.imen@gmail.com", // TODO: your gmail account
+    pass: process.env.PASSWORD || "imen1994", // TODO: your gmail password
+  },
+});
+
 const signup = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
@@ -37,7 +48,7 @@ const signup = async (req, res, next) => {
     date_creation: date,
     tel,
     actif: true,
-    confirmation: true,
+    confirmation: false,
     enfants: [],
     parents: [],
     activitys: [],
@@ -247,6 +258,47 @@ const setDeleguer = async (req, res, next) => {
   res.status(200).json({ existingJardin: existingJardin });
 };
 
+
+const ConfirmeJardin = async (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return next(new httpError("invalid input passed ", 422));
+  }
+  const { email } = req.body;
+  const UserId = req.params.id;
+  let existingJardin;
+
+  try {
+    existingJardin = await jardin.findById(UserId);
+  } catch {
+    return next(new httpError("failed ", 500));
+  }
+  existingJardin.confirmation = true;
+
+  try {
+    existingJardin.save();
+  } catch {
+    return next(new httpError("failed to save ", 500));
+  }
+
+  let mailOptions = {
+    from: "twaibia.imen@gmail.com", // TODO: email sender
+    to: email, // TODO: email receiver
+    subject: "Confirmation de creation de compte",
+    text: "Votre Compte est bien confirmer",
+  };
+
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      return log("Error occurs");
+    }
+    return log("Email sent!!!");
+  });
+
+  res.status(200).json({ existingJardin: existingJardin });
+};
+
+
 exports.signup = signup;
 exports.login = login;
 exports.updateJardin = updateJardin;
@@ -255,3 +307,4 @@ exports.getJardin = getJardin;
 exports.getJardinById = getJardinById;
 exports.bloquageJardin = bloquageJardin;
 exports.setDeleguer = setDeleguer
+exports.ConfirmeJardin = ConfirmeJardin
