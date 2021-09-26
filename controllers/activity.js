@@ -5,7 +5,6 @@ const jardin = require("../models/jardin");
 
 const ajoutActivity = async (req, res, next) => {
 
-
   const { titre, type, description, jardinId } = req.body;
   console.log(titre,type,description,jardinId)
 

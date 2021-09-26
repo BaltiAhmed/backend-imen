@@ -11,6 +11,7 @@ const enfantRoutes = require("./routes/enfant");
 const activityRoutes = require("./routes/activity");
 const evenementRoutes = require("./routes/evenement");
 const messageRoutes = require("./routes/message");
+const ReclamationRoute = require("./routes/reclamation");
 
 const httperror = require("./models/error");
 
@@ -21,12 +22,12 @@ app.use(bodyParser.json());
 app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
 
   next();
 });
@@ -38,6 +39,7 @@ app.use("/api/enfant", enfantRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/evenement", evenementRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/reclamation", ReclamationRoute);
 
 app.use((req, res, next) => {
   const error = new httperror("could not find that page", 404);
