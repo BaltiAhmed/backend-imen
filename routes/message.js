@@ -6,5 +6,6 @@ const messageControllers = require("../controllers/message");
 route.post("/ajout", messageControllers.sendMessage);
 route.get('/',messageControllers.getMessage)
 route.get('/jardin/:id',messageControllers.getMessageByJardinId)
+route.get('/parent/:id',messageControllers.getMessageByParentId)
 
 module.exports = route;

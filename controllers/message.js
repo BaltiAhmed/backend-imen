@@ -22,21 +22,21 @@ const sendMessage = async (req, res, next) => {
     return next(error);
   }
 
-  /*  let existinfParent;
+   let existinfParent;
 
   try {
     existinfParent = await parent.findById(parentId);
   } catch (err) {
     const error = new httpError("problem !!!!!", 500);
     return next(error);
-  } */
+  }
 
   try {
     createdMessage.save();
     existingJardin.messages.push(createdMessage);
     existingJardin.save();
-    /*  existinfParent.messages.push(createdMessage);
-    await existinfParent.save(); */
+    existinfParent.messages.push(createdMessage);
+    await existinfParent.save();
   } catch (err) {
     const error = new httpError("failed signup", 500);
     return next(error);
@@ -83,6 +83,34 @@ const getMessageByJardinId = async (req, res, next) => {
   });
 };
 
+const getMessageByParentId = async (req, res, next) => {
+  const id = req.params.id;
+
+  let existingMessage;
+  try {
+    existingMessage = await parent.findById(id).populate("messages");
+  } catch (err) {
+    const error = new httpError(
+      "Fetching enfats failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingMessage || existingMessage.messages.length === 0) {
+    return next(
+      new httpError("Could not find child for the provided user id.", 404)
+    );
+  }
+
+  res.json({
+    messages: existingMessage.messages.map((el) =>
+      el.toObject({ getters: true })
+    ),
+  });
+};
+
 exports.sendMessage = sendMessage;
 exports.getMessage = getMessage;
 exports.getMessageByJardinId =getMessageByJardinId
+exports.getMessageByParentId = getMessageByParentId
