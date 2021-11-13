@@ -45,6 +45,47 @@ const sendMessage = async (req, res, next) => {
   res.status(201).json({ message: createdMessage });
 };
 
+const sendMessageParentParent = async (req, res, next) => {
+  const { text, idSender, idRecever, parentId1, parentId2 } = req.body;
+
+  const createdMessage = new message({
+    text,
+    idSender,
+    idRecever,
+  });
+
+  let existinfParent1;
+
+  try {
+    existinfParent1 = await parent.findById(idSender);
+  } catch (err) {
+    const error = new httpError("problem !!!!!", 500);
+    return next(error);
+  }
+
+   let existinfParent2;
+
+  try {
+    existinfParent2 = await parent.findById(idRecever);
+  } catch (err) {
+    const error = new httpError("problem !!!!!", 500);
+    return next(error);
+  }
+
+  try {
+    createdMessage.save();
+    existinfParent1.messages.push(createdMessage);
+    existinfParent1.save();
+    existinfParent2.messages.push(createdMessage);
+    await existinfParent2.save();
+  } catch (err) {
+    const error = new httpError("failed signup", 500);
+    return next(error);
+  }
+
+  res.status(201).json({ message: createdMessage });
+};
+
 const getMessage = async (req, res, next) => {
   let existingMessage;
   try {
@@ -111,6 +152,7 @@ const getMessageByParentId = async (req, res, next) => {
 };
 
 exports.sendMessage = sendMessage;
+exports.sendMessageParentParent =sendMessageParentParent
 exports.getMessage = getMessage;
 exports.getMessageByJardinId =getMessageByJardinId
 exports.getMessageByParentId = getMessageByParentId
